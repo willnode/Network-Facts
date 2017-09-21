@@ -1,0 +1,315 @@
+﻿<Window x:Class="Network_Facts.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Network_Facts"
+        mc:Ignorable="d"
+        Title="Network Facts Getherer" Height="600" Width="525" WindowStyle="SingleBorderWindow" Loaded="Window_Loaded" Closing="Window_Closing" MaxWidth="800">
+    <ScrollViewer Focusable="False">
+        <StackPanel>
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Expander}">
+                    <Setter Property="Padding" Value="0,3,0,3"/>
+                </Style>
+                <Style TargetType="{x:Type TextBox}">
+                    <Setter Property="BorderThickness" Value="0,0,0,0"/>
+                    <Setter Property="IsReadOnly" Value="true"/>
+                </Style>
+                <Style x:Key="RGrid" TargetType="Grid">
+                    <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Expander}, Path=ActualWidth}"/>
+                </Style>
+            </StackPanel.Resources>
+
+            <!-- Statistic Panel -->
+            <Expander x:Name="_nStat" IsExpanded="True" Expanded="_nStat_Expanded">
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Statistics"/>
+                        <Label x:Name="_nStatS" Content="Up" Grid.Column="1" Foreground="#FF939393" HorizontalAlignment="Center"/>
+                        <ComboBox x:Name="_nStatDev" Grid.Column="2" ToolTip="List of network interfaces that measurable" SelectionChanged="_nStatDev_SelectionChanged" />
+                    </Grid>
+                </Expander.Header>
+
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Upload" Grid.Column="0" HorizontalAlignment="Center"/>
+                        <Label Content="Speed" Grid.Column="1"  HorizontalAlignment="Center"/>
+                        <Label Content="Download" Grid.Column="2" HorizontalAlignment="Center"/>
+                        <Label x:Name="_nStatUp" Content="0.00 MB" FontSize="40" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center"/>
+                        <Label x:Name="_nStatSpeed" Content="0.00 MBps" FontSize="20" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Label x:Name="_nStatDown" Content="0.00 MB" FontSize="40" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center"/>
+
+                    </Grid>
+                    <ListView x:Name="_nStatLog" MinHeight="200" Focusable="False">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn Header="Date" Width="200" DisplayMemberBinding="{Binding DisplayDate}"/>
+                                <GridViewColumn Header="Up" Width="100" DisplayMemberBinding="{Binding DisplayUp}"/>
+                                <GridViewColumn Header="Down" Width="100" DisplayMemberBinding="{Binding DisplayDown}"/>
+                                <GridViewColumn Header="Sessions" Width="50" DisplayMemberBinding="{Binding DisplaySessions}"/>
+                            </GridView>
+                        </ListView.View>
+
+                    </ListView>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="Clear"/>
+                        <Label Grid.Column="1" Content="Total: 200 MB" />
+                        <Button Grid.Column="2" Content="Export"/>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+
+            <!-- Details Panel -->
+            <Expander>
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Network Devices"/>
+                        <ComboBox x:Name="_nDetailsDev" Grid.Column="1" ToolTip="List of network interface details" SelectionChanged="_nDetailsDev_SelectionChanged" />
+                    </Grid>
+                </Expander.Header>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Description" Grid.Row="0" Grid.Column="0" />
+                    <Label Content="Type" Grid.Row="1" Grid.Column="0" />
+                    <Label Content="IPv4 Address" Grid.Row="2" Grid.Column="0" />
+                    <Label Content="IPv6 Addresses" Grid.Row="3" Grid.Column="0" />
+                    <Label Content="MAC Address" Grid.Row="4" Grid.Column="0" />
+                    <Label Content="Max Speed" Grid.Row="5" Grid.Column="0" />
+
+                    <TextBox x:Name="_nDet0" Grid.Row="0" Grid.Column="1"  />
+                    <TextBox x:Name="_nDet1" Grid.Row="1" Grid.Column="1"  />
+                    <TextBox x:Name="_nDet2" Grid.Row="2" Grid.Column="1"  />
+                    <TextBox x:Name="_nDet3" Grid.Row="3" Grid.Column="1" MinHeight="60" />
+                    <TextBox x:Name="_nDet4" Grid.Row="4" Grid.Column="1"  />
+                    <TextBox x:Name="_nDet5" Grid.Row="5" Grid.Column="1"  />
+                </Grid>
+            </Expander>
+
+            <!-- Public Panel -->
+            <Expander>
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Public Profile"/>
+                        <Button x:Name="_nPublicDo" Content="Update" Grid.Column="1" ToolTip="Click to update. Internet access is required." Click="_nPublicDo_Click" />
+                    </Grid>
+                </Expander.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+
+                    <Label Content="Public IP" Grid.Row="0" Grid.Column="0" />
+                    <Label Content="Provider" Grid.Row="1" Grid.Column="0" />
+                    <Label Content="Approximate Location" Grid.Row="2" Grid.Column="0" />
+                    <Label Content="" Grid.Row="3" Grid.Column="0" />
+                    <Label Content="Weather" Grid.Row="4" Grid.Column="0" />
+                    <Label Content="" Grid.Row="5" Grid.Column="0" />
+
+                    <TextBox x:Name="_nPublicIP" Grid.Row="0" Grid.Column="1"  />
+                    <TextBox x:Name="_nPublicVen"  Grid.Row="1" Grid.Column="1"  />
+                    <TextBox x:Name="_nPublicLoc" Grid.Row="2" Grid.Column="1"  />
+                    <TextBox x:Name="_nPublicGeo" Grid.Row="3" Grid.Column="1"  />
+                    <TextBox x:Name="_nPublicTemp" Grid.Row="4" Grid.Column="1"  />
+                    <TextBox x:Name="_nPublicTempStat" Grid.Row="5" Grid.Column="1"  />
+
+                    <Image x:Name="_nPublicGeoImg"  Grid.Row="6" Grid.ColumnSpan="2" Stretch="Uniform" MinHeight="200" MaxHeight="350" HorizontalAlignment="Center"/>
+                </Grid>
+            </Expander>
+
+            <!-- Local Panel -->
+            <Expander>
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Local Network"/>
+                        <Button x:Name="_nLocalBut" Content="Update" Grid.Column="1" ToolTip="Click to update the information below." Click="Button_Click" />
+                    </Grid>
+                </Expander.Header>
+                <ListView x:Name="_nLocalList"  MinHeight="200" Focusable="False">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn Header="Hostname" Width="200" DisplayMemberBinding="{Binding DisplayHostname}"/>
+                            <GridViewColumn Header="IPv4" Width="100" DisplayMemberBinding="{Binding DisplayIPv4}"/>
+                            <GridViewColumn Header="IPv6" Width="100" DisplayMemberBinding="{Binding DisplayIPv6}"/>
+                            <GridViewColumn Header="Latency" Width="100" DisplayMemberBinding="{Binding DisplayLatency}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Expander>
+
+            <!-- (Wi)Fi Panel -->
+            <Expander x:Name="_nFi" Expanded="_nFi_Expanded">
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="WiFi Profiles"/>
+                        <ComboBox x:Name="_nFiDev" Grid.Column="1" ToolTip="List of network interface details" SelectionChanged="_nDetailsDev_SelectionChanged" />
+                    </Grid>
+                </Expander.Header>
+                <ListView x:Name="_nFiList"  MinHeight="200" Focusable="False">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn Header="SSID" Width="200">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding DisplaySSID}" Margin="0">
+                                            <Label.Style>
+                                                <Style TargetType="Label">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                            <Setter Property="FontWeight" Value="Bold"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Strength" Width="100" DisplayMemberBinding="{Binding DisplayStrength}"/>
+                            <GridViewColumn Header="Authentication" Width="100" DisplayMemberBinding="{Binding DisplayAuth}"/>
+                            <!-- GridViewColumn Header="Action" Width="100">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Details" Margin="0">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding IsAvailable}" Value="True">
+                                                            <Setter Property="Content" Value="Connect"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </-->
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Expander>
+
+            <!-- Sniffing Panel -->
+            <Expander x:Name="_nSniff">
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Network Sniffs"/>
+                        <Button x:Name="_nSniffDo" Content="Start" Grid.Column="1" ToolTip="Click to update the information below." Click="_nSniffDo_Click" />
+                    </Grid>
+                </Expander.Header>
+                <ListView MinHeight="200" Focusable="False" x:Name="_nSniffList">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn Header="IP" Width="150" DisplayMemberBinding="{Binding DisplayIP}"/>
+                            <GridViewColumn Header="Servername" Width="130" DisplayMemberBinding="{Binding DisplayServer}"/>
+                            <GridViewColumn Header="Ingoing" Width="100" DisplayMemberBinding="{Binding DisplayIngoing}"/>
+                            <GridViewColumn Header="Outgoing" Width="100" DisplayMemberBinding="{Binding DisplayOutgoing}"/>
+                            <GridViewColumn Header="Bytes" Width="100" DisplayMemberBinding="{Binding DisplayBytes}"/>
+                            <GridViewColumn Header="Last Attempt" Width="100" DisplayMemberBinding="{Binding DisplayDate}"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Expander>
+            
+            <Label MinHeight="300"/>
+
+            <!-- Expander>
+                <Expander.Header>
+                    <Grid Style="{StaticResource RGrid}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Web Request"/>
+                        <Button Content="Popout" Grid.Column="1" ToolTip="Click to update the information below." />
+                    </Grid>
+                </Expander.Header>
+                <ListView MinHeight="200" Focusable="False">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn Header="Protocol" Width="200"/>
+                            <GridViewColumn Header="URI/Port" Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </-->
+
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>
